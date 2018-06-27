@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion 27
@@ -32,4 +33,23 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     api 'com.squareup.okhttp3:mockwebserver:3.10.0'
+}
+
+publish {
+    userOrg = 'ymex'
+    groupId = 'cn.ymex.okhttp'
+    artifactId = 'okhttp'
+    publishVersion = '1.0.0'
+    desc = 'base okhttp for Android'
+    website = 'https://github.com/ymex/anhttp'
+}
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+task androidJavadocs(type: Javadoc) {
+    allprojects {
+        tasks.withType(Javadoc) {
+            options.encoding = "UTF-8"
+        }
+    }
 }
