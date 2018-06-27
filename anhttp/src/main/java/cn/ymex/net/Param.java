@@ -9,7 +9,7 @@ import okhttp3.MultipartBody;
 
 /**
  * @author ymexc
- * @date 2018/6/27
+ * 2018/6/27
  * Param 参数
  */
 public final class Param {

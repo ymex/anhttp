@@ -23,6 +23,10 @@ android {
         }
     }
 
+    lintOptions {
+        abortOnError false
+    }
+
 }
 
 dependencies {
@@ -37,8 +41,8 @@ dependencies {
 
 publish {
     userOrg = 'ymex'
-    groupId = 'cn.ymex.okhttp'
-    artifactId = 'okhttp'
+    groupId = 'cn.ymex.anhttp'
+    artifactId = 'anhttp'
     publishVersion = '1.0.0'
     desc = 'base okhttp for Android'
     website = 'https://github.com/ymex/anhttp'
