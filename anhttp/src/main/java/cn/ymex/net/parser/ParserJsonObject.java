@@ -8,7 +8,9 @@ import java.lang.reflect.Type;
 import cn.ymex.net.Response;
 
 /**
- * Created by ymex on 2018/6/25.
+ *
+ * @author ymex
+ * 2018/6/25
  * ParserJsonObject
  */
 public class ParserJsonObject extends ParserResponse<JSONObject> {

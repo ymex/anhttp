@@ -2,18 +2,21 @@ package cn.ymex.net.callback;
 
 
 import cn.ymex.net.Response;
-import cn.ymex.net.parser.Parser;
+import cn.ymex.net.parser.Convert;
 
 /**
- * Created by ymexc on 2018/6/25.
+ *
+ * @author ymexc
+ * 2018/6/25
  * 请示回调
  */
-public interface Callback<T> extends Parser<Response, T> {
+public interface Callback<T> extends Convert<Response, T> {
     /**
      * 请求前回调
      * ui 线程
      */
     void onPrepare();
+
     /**
      * 请求响应
      * 子线程

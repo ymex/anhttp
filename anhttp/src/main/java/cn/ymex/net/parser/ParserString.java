@@ -6,8 +6,10 @@ import java.lang.reflect.Type;
 import cn.ymex.net.Response;
 
 /**
- * Created by ymex on 2018/6/25.
- * About:
+ *
+ * @author ymex
+ *2018/6/25
+ * ParserString
  */
 public class ParserString extends ParserResponse<String> {
     @Override

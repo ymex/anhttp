@@ -6,7 +6,9 @@ import java.lang.reflect.Type;
 import cn.ymex.net.Response;
 
 /**
- * Created by ymex on 2018/6/25.
+ *
+ * @author ymex
+ * 2018/6/25
  * ParserResponse
  */
 public abstract class ParserResponse<T> implements Parser<Response, T> {

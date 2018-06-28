@@ -24,8 +24,8 @@ import okhttp3.ResponseBody;
  */
 public class ResponseCallback<E> extends AbstractCallback<E> {
 
-    Type mType;
-    Parser<Response, ?> parser;
+    private Type mType;
+    private Parser<Response, ?> parser;
 
     public ResponseCallback() {
     }
@@ -41,14 +41,14 @@ public class ResponseCallback<E> extends AbstractCallback<E> {
     @Override
     public E convert(Response value) throws Exception {
 
-        if (mType == null) {
+        if (null == mType) {
             Type genType = getClass().getGenericSuperclass();
             mType = ((ParameterizedType) genType).getActualTypeArguments()[0];
         }
 
-        if (parser == null) {
+        if (null == parser) {
             parser = AnHttp.instance().getParser();
-            if (parser == null) {
+            if (null == parser) {
                 if (mType instanceof Class) {
                     parser = parseClass(value, (Class<?>) mType);
                 } else {

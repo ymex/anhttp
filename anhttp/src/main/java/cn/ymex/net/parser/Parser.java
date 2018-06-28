@@ -3,19 +3,21 @@ package cn.ymex.net.parser;
 
 import java.lang.reflect.Type;
 
-import cn.ymex.net.Response;
-
-public interface Parser<F, T> {
-
-    T convert(F value) throws Exception;
-
+/**
+ * @author ymexc
+ */
+public interface Parser<F, T> extends Convert<F, T> {
+    /**
+     * 设置泛型T的类型
+     *
+     * @param type
+     */
     void setType(Type type);
 
+    /**
+     * 获取输出类型
+     *
+     * @return Type
+     */
     Type getType();
-
-    public class Factory{
-        Parser<Response, String> createStringParser() {
-            return null;
-        }
-    }
 }

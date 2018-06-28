@@ -4,7 +4,9 @@ import android.annotation.TargetApi;
 import android.os.Build;
 
 /**
- * Created by ymexc on 2018/6/25.
+ *
+ * @author ymexc
+ * 2018/6/25
  */
 public class NetException extends Exception {
 
