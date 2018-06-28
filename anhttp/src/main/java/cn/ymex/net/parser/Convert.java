@@ -3,7 +3,7 @@ package cn.ymex.net.parser;
 /**
  *
  * @author ymexc
- * @date 2018/6/28
+ * 2018/6/28
  * Convert
  */
 public interface Convert<F, T> {

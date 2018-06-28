@@ -15,7 +15,7 @@ import okhttp3.OkHttpClient;
 /**
  *
  * @author ymexc
- * @date 2018/6/25
+ * 2018/6/25
  * AnHttp
  */
 public class AnHttp {
