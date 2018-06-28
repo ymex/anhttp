@@ -53,8 +53,8 @@ public class Request {
         return this;
     }
 
-    public Request param(RequestBody paramter) {
-        this.okRequestBody = paramter;
+    public Request param(RequestBody param) {
+        this.okRequestBody = param;
         return this;
     }
 

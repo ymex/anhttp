@@ -3,6 +3,8 @@ package cn.ymex.net.parser;
 
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
+
 import cn.ymex.net.Response;
 
 /**
@@ -15,5 +17,10 @@ public class ParserJsonObject extends ParserResponse<JSONObject> {
     public JSONObject convert(Response value) throws Exception {
         assert value.getBody() != null;
         return new JSONObject(value.getBody().string());
+    }
+
+    @Override
+    public Type getType() {
+        return JSONObject.class;
     }
 }

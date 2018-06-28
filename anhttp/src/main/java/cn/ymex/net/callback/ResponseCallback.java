@@ -22,7 +22,7 @@ import okhttp3.ResponseBody;
  * About:响应处理
  * 注意：仅支持 String ,JSONObject,JSONArray,不支持泛型
  */
-public class ResponseCallback<T> extends AbstractCallback<T> {
+public class ResponseCallback<E> extends AbstractCallback<E> {
 
     Type mType;
     Parser<Response, ?> parser;
@@ -39,20 +39,16 @@ public class ResponseCallback<T> extends AbstractCallback<T> {
     }
 
     @Override
-    public void onResult(T result, Response.Status status) {
+    public E convert(Response value) throws Exception {
 
-    }
-
-    @Override
-    public T convert(Response value) throws Exception {
+        if (mType == null) {
+            Type genType = getClass().getGenericSuperclass();
+            mType = ((ParameterizedType) genType).getActualTypeArguments()[0];
+        }
 
         if (parser == null) {
             parser = AnHttp.instance().getParser();
             if (parser == null) {
-                if (mType == null) {
-                    Type genType = getClass().getGenericSuperclass();
-                    mType = ((ParameterizedType) genType).getActualTypeArguments()[0];
-                }
                 if (mType instanceof Class) {
                     parser = parseClass(value, (Class<?>) mType);
                 } else {
@@ -60,8 +56,22 @@ public class ResponseCallback<T> extends AbstractCallback<T> {
                 }
             }
         }
+
+
+        parser.setType(mType);
         //noinspection unchecked
-        return (T) parser.convert(value);
+        return (E) parser.convert(value);
+
+    }
+
+    /**
+     * 结果处理
+     *
+     * @param result
+     * @param status
+     */
+    @Override
+    public void onResult(E result, Response.Status status) {
 
     }
 
@@ -83,4 +93,6 @@ public class ResponseCallback<T> extends AbstractCallback<T> {
             throw new NetException(NetException.NOPARSER_MESSAGE);
         }
     }
+
+
 }

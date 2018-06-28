@@ -49,6 +49,10 @@ public class AnHttp {
         return okHttpClient;
     }
 
+    public void setOkHttpClient(OkHttpClient okHttpClient) {
+        this.okHttpClient = okHttpClient;
+    }
+
 
     private OkHttpClient defaultClient() {
         return new OkHttpClient.Builder()
@@ -59,6 +63,10 @@ public class AnHttp {
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .writeTimeout(3, TimeUnit.MINUTES)
                 .build();
+    }
+
+    public void setHeaders(Headers headers) {
+        this.headers = headers;
     }
 
     private Headers defaultHeaders() {
@@ -114,7 +122,12 @@ public class AnHttp {
 
     private Parser<Response, ?> parser;
 
+    public void setParser(Parser<Response, ?> parser) {
+        this.parser = parser;
+    }
+
     public Parser<Response, ?> getParser() {
         return parser;
     }
+
 }

@@ -1,6 +1,8 @@
 package cn.ymex.net.callback;
 
 
+import java.lang.reflect.Type;
+
 import cn.ymex.net.AnHttp;
 import cn.ymex.net.Response;
 import cn.ymex.net.exception.NetException;
@@ -44,7 +46,7 @@ public abstract class AbstractCallback<T> implements Callback<T> {
      * 数据结果
      * ui 线程
      * 注意：
-     *
+     * @param status
      * @param result
      */
     public abstract void onResult(T result, Response.Status status) throws NetException;
@@ -61,4 +63,13 @@ public abstract class AbstractCallback<T> implements Callback<T> {
 
     @Override
     public abstract T convert(Response value) throws Exception;
+
+    @Override
+    public Type getType() {
+        return null;
+    }
+
+    @Override
+    public void setType(Type type) {
+    }
 }

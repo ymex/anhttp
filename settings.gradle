@@ -1,1 +1,1 @@
-include ':app', ':anhttp'
+include ':app', ':anhttp', ':anhttp-gson'

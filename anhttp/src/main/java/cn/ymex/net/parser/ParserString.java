@@ -1,6 +1,8 @@
 package cn.ymex.net.parser;
 
 
+import java.lang.reflect.Type;
+
 import cn.ymex.net.Response;
 
 /**
@@ -12,5 +14,10 @@ public class ParserString extends ParserResponse<String> {
     public String convert(Response value) throws Exception {
         assert value.getResponse().body() != null;
         return value.getResponse().body().string();
+    }
+
+    @Override
+    public Type getType() {
+        return String.class;
     }
 }
