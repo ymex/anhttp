@@ -9,8 +9,8 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        versionCode rootProject.ext.version_code
+        versionName rootProject.ext.version_name
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -43,7 +43,7 @@ publish {
     userOrg = 'ymex'
     groupId = 'cn.ymex.anhttp'
     artifactId = 'anhttp'
-    publishVersion = '1.0.0'
+    publishVersion = rootProject.ext.version_name
     desc = 'base okhttp for Android'
     website = 'https://github.com/ymex/anhttp'
 }
