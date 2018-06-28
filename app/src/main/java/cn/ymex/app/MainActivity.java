@@ -52,12 +52,6 @@ public class MainActivity extends AppCompatActivity {
                     tvContent.setText(result.getResults().get(0).getContent());
                 }
             }
-
-            @Override
-            public void onError(Throwable throwable) {
-                super.onError(throwable);
-                System.out.println("---------------"+throwable.getLocalizedMessage());
-            }
         });
 
     }
