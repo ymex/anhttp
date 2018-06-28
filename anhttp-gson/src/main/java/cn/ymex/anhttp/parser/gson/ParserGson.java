@@ -8,8 +8,10 @@ import cn.ymex.net.Response;
 import cn.ymex.net.parser.ParserResponse;
 
 /**
- * Created by ymexc on 2018/6/28.
- * About:TODO
+ *
+ * @author ymexc
+ * 2018/6/28
+ * anhttp gson 转换支持
  */
 public class ParserGson extends ParserResponse {
 
@@ -22,6 +24,7 @@ public class ParserGson extends ParserResponse {
     @Override
     public Object convert(Response value) throws Exception {
         TypeAdapter<?> adapter = gson.getAdapter(TypeToken.get(getType()));
+        assert value.getResponse().body() != null;
         return adapter.fromJson(value.getResponse().body().string());
     }
 }
