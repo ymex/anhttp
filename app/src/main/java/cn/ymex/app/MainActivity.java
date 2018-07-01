@@ -40,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
                 requestHistory();
             }
         });
-        AnHttp.instance().setParser(new ParserGson());
     }
 
     private void requestHistory() {
@@ -51,6 +50,11 @@ public class MainActivity extends AppCompatActivity {
                 if (status.isSuccessful()) {
                     tvContent.setText(result.getResults().get(0).getContent());
                 }
+            }
+            @Override
+            public void onError(Throwable throwable) {
+                super.onError(throwable);
+                System.out.println("---------:"+throwable.getLocalizedMessage());
             }
         });
 
