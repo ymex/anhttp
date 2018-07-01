@@ -21,13 +21,16 @@ import okhttp3.OkHttpClient;
  * AnHttp
  */
 public class AnHttp {
-    private Context context;
-    private boolean debug = false;
+
     private static volatile AnHttp sAnHttp;
+
+    private Context context;
+    private Parser<Response, ?> parser;
+    private boolean debug = false;
     private OkHttpClient okHttpClient;
+    private Headers headers;
     private MainThreadExecutor mainExecutor;
 
-    private Headers headers;
 
     public static AnHttp instance() {
         if (sAnHttp == null) {
@@ -44,6 +47,12 @@ public class AnHttp {
         return debug;
     }
 
+    /**
+     * 设置是否是dev 环境，默认okHttpClient会打印相关日志
+     *
+     * @param debug
+     * @return
+     */
     public AnHttp setDebug(boolean debug) {
         this.debug = debug;
         return this;
@@ -53,6 +62,11 @@ public class AnHttp {
         mainExecutor = new MainThreadExecutor();
     }
 
+    /**
+     * 主线程
+     *
+     * @return
+     */
     public MainThreadExecutor getMainExecutor() {
         return mainExecutor;
     }
@@ -64,13 +78,50 @@ public class AnHttp {
         return okHttpClient;
     }
 
+    /**
+     * 设置OkHttpClient
+     *
+     * @param okHttpClient
+     * @return
+     */
     public AnHttp setOkHttpClient(OkHttpClient okHttpClient) {
         this.okHttpClient = okHttpClient;
         return this;
     }
 
+    /**
+     * 设置 content
+     *
+     * @param context
+     * @return
+     */
     public AnHttp setContext(Context context) {
-        this.context = context;
+        if (context != null) {
+            this.context = context.getApplicationContext();
+        }
+        return this;
+    }
+
+    /**
+     * 设置公共请求头
+     *
+     * @param headers
+     * @return
+     */
+    public AnHttp setHeaders(Headers headers) {
+        this.headers = headers;
+        return this;
+    }
+
+
+    /**
+     * 设置全局响应转换
+     *
+     * @param parser
+     * @return
+     */
+    public AnHttp setParser(Parser<Response, ?> parser) {
+        this.parser = parser;
         return this;
     }
 
@@ -88,10 +139,6 @@ public class AnHttp {
                 .build();
     }
 
-    public AnHttp setHeaders(Headers headers) {
-        this.headers = headers;
-        return this;
-    }
 
     private Headers defaultHeaders() {
         return new Headers.Builder()
@@ -99,6 +146,8 @@ public class AnHttp {
                 .add("User-Agent", HttpHeaders.getUserAgent(context))
                 .build();
     }
+
+    /**************http method***************/
 
     public static Request get(String url) {
         return new Request().method(Request.Method.GET, url);
@@ -144,12 +193,6 @@ public class AnHttp {
         }
     }
 
-    private Parser<Response, ?> parser;
-
-    public AnHttp setParser(Parser<Response, ?> parser) {
-        this.parser = parser;
-        return this;
-    }
 
     public Parser<Response, ?> getParser() {
         return parser;
