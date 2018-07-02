@@ -13,8 +13,7 @@ public class AppContext extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        AnHttp.instance()
-                .setDebug(true)
-                .setParser(new ParserGson());
+        AnHttp.instance().setDebug(true)
+                .setContext(this).setParser(new ParserGson());
     }
 }

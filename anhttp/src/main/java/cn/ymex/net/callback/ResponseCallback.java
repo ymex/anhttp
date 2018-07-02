@@ -52,7 +52,7 @@ public class ResponseCallback<E> extends AbstractCallback<E> {
                 if (mType instanceof Class) {
                     parser = parseClass(value, (Class<?>) mType);
                 } else {
-                    throw new NetException(NetException.NOPARSER_MESSAGE);
+                    throw new NetException("Type " + mType + NetException.NOPARSER_MESSAGE);
                 }
             }
         }
@@ -90,7 +90,7 @@ public class ResponseCallback<E> extends AbstractCallback<E> {
         } else if (type == JSONArray.class) {
             return new ParserJsonArray();
         } else {
-            throw new NetException(NetException.NOPARSER_MESSAGE);
+            throw new NetException(mType + ":" + NetException.NOPARSER_MESSAGE);
         }
     }
 

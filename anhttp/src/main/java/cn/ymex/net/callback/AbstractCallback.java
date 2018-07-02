@@ -4,6 +4,7 @@ package cn.ymex.net.callback;
 import cn.ymex.net.AnHttp;
 import cn.ymex.net.Response;
 import cn.ymex.net.exception.NetException;
+import cn.ymex.net.kits.Log;
 
 /**
  * @author ymexc 2018/6/25
@@ -52,7 +53,7 @@ public abstract class AbstractCallback<T> implements Callback<T> {
 
     @Override
     public void onError(Throwable throwable) {
-
+        Log.error("AnHttp error:", throwable);
     }
 
     @Override

@@ -10,7 +10,7 @@ import android.os.Build;
  */
 public class NetException extends Exception {
 
-    public static final String NOPARSER_MESSAGE = "Type that is not supported, please customize type conversion Parser";
+    public static final String NOPARSER_MESSAGE = " is not supported, please customize type conversion Parser";
 
 
 
