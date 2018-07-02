@@ -1,12 +1,12 @@
 # anhttp
-基于okhttp 的封装，使用方便简单 及 完全可定制。
+基于okhttp 的封装，方便简单。
 
 
 ```
-compile 'cn.ymex.anhttp:anhttp:1.0.2'
+compile 'cn.ymex.anhttp:anhttp:1.0.3'
 
 #支持Gson转换
-compile 'cn.ymex.anhttp:anhttp-gson:1.0.2'
+compile 'cn.ymex.anhttp:anhttp-gson:1.0.3'
 ```
 
 ## 使用
