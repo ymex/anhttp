@@ -2,6 +2,9 @@ package cn.ymex.net;
 
 import android.support.annotation.Nullable;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import okhttp3.FormBody;
 import okhttp3.Headers;
 import okhttp3.MediaType;
@@ -16,6 +19,7 @@ public final class Param {
 
     FormBody.Builder formBuilder;
     MultipartBody.Builder mutipartBuilder;
+    Map<String, String> innerParam = new HashMap<>();
 
     private Param(FormBody.Builder formBuilder) {
         this.formBuilder = formBuilder;
@@ -40,6 +44,7 @@ public final class Param {
         } else if (mutipartBuilder != null) {
             mutipartBuilder.addFormDataPart(key, value);
         }
+        innerParam.put(key, value);
         return this;
     }
 

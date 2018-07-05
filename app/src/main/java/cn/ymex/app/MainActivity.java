@@ -2,29 +2,24 @@ package cn.ymex.app;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.List;
 
-import cn.ymex.anhttp.parser.gson.ParserGson;
 import cn.ymex.net.AnHttp;
+import cn.ymex.net.Param;
 import cn.ymex.net.Response;
 import cn.ymex.net.callback.ResponseCallback;
-import cn.ymex.net.exception.NetException;
 
 public class MainActivity extends AppCompatActivity {
     private TextView tvContent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,18 +38,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void requestHistory() {
-        String url = "http://gank.io/api/history/content/2/1";
-        AnHttp.get(url).call(new ResponseCallback<BaseModel<List<ResultsBean>>>(){
+
+        AnHttp.get("content/2/1").param(Param.form().add("main","hi")).call(new ResponseCallback<BaseModel<List<ResultsBean>>>() {
             @Override
             public void onResult(BaseModel<List<ResultsBean>> result, Response.Status status) {
                 if (status.isSuccessful()) {
                     tvContent.setText(result.getResults().get(0).getContent());
                 }
             }
+
             @Override
             public void onError(Throwable throwable) {
                 super.onError(throwable);
-                System.out.println("---------:"+throwable.getLocalizedMessage());
+                System.out.println("---------:" + throwable.getLocalizedMessage());
             }
         });
 

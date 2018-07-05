@@ -1,12 +1,21 @@
 package cn.ymex.net;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSession;
 
 import cn.ymex.net.dispatch.MainThreadExecutor;
 import cn.ymex.net.interceptor.LogInterceptor;
 import cn.ymex.net.kits.HttpHeaders;
+import cn.ymex.net.kits.SSLKit;
 import cn.ymex.net.parser.Parser;
 import okhttp3.Call;
 import okhttp3.ConnectionPool;
@@ -23,13 +32,21 @@ import okhttp3.OkHttpClient;
 public class AnHttp {
 
     private static volatile AnHttp sAnHttp;
-
+    private String baseUrl;
     private Context context;
     private Parser<Response, ?> parser;
     private boolean debug = false;
     private OkHttpClient okHttpClient;
-    private Headers headers;
     private MainThreadExecutor mainExecutor;
+
+    /**
+     * 共同头部
+     */
+    private Headers commonHeaders;
+    /**
+     * 共同参数
+     */
+    private Map<String, String> commonParams;
 
 
     public static AnHttp instance() {
@@ -103,14 +120,104 @@ public class AnHttp {
     }
 
     /**
-     * 设置公共请求头
+     * 设置统一请求地址
+     *
+     * @param baseUrl
+     * @return
+     */
+    public AnHttp setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
+        return this;
+    }
+
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    /**
+     * 添加公共头部
      *
      * @param headers
      * @return
      */
-    public AnHttp setHeaders(Headers headers) {
-        this.headers = headers;
+    public AnHttp addCommonHeaders(Headers headers) {
+        if (headers == null) {
+            return this;
+        }
+        Headers.Builder builder = getCommonHeaders().newBuilder();
+        Iterator<String> iterator = headers.names().iterator();
+        while (iterator.hasNext()) {
+            String name = iterator.next();
+            String value = headers.get(name);
+            if (!TextUtils.isEmpty(value)) {
+                builder.add(name, value);
+            }
+
+        }
+        commonHeaders = builder.build();
         return this;
+    }
+
+    /**
+     * 添加公共头部
+     *
+     * @param k
+     * @param v
+     * @return
+     */
+    public AnHttp addCommonHeader(String k, String v) {
+        commonHeaders = getCommonHeaders().newBuilder().add(k, v).build();
+        return this;
+    }
+
+    /**
+     * 清空公共头部
+     *
+     * @return
+     */
+    public AnHttp clearCommonHeader() {
+        commonHeaders = null;
+        commonHeaders = getCommonHeaders();
+        return this;
+    }
+
+    public Headers getCommonHeaders() {
+        if (commonHeaders == null) {
+            commonHeaders = defaultHeaders();
+        }
+        return commonHeaders;
+    }
+
+    /**
+     * 添加公共参数
+     *
+     * @param k
+     * @param v
+     * @return
+     */
+    public AnHttp addCommonParam(String k, String v) {
+        getCommonParams().put(k, v);
+        return this;
+    }
+
+    public AnHttp addCommonParams(Map<String, String> params) {
+        if (params == null || params.isEmpty()) {
+            return this;
+        }
+        getCommonParams().putAll(params);
+        return this;
+    }
+
+    public AnHttp clearCommonParams() {
+        getCommonParams().clear();
+        return this;
+    }
+
+    public Map<String, String> getCommonParams() {
+        if (commonParams == null) {
+            commonParams = new LinkedHashMap<>();
+        }
+        return commonParams;
     }
 
 
@@ -128,14 +235,23 @@ public class AnHttp {
     private OkHttpClient defaultClient() {
         LogInterceptor logInterceptor = new LogInterceptor();
         logInterceptor.setLevel(isDebug() ? LogInterceptor.Level.BODY : LogInterceptor.Level.NONE);
+        //信任所有证书
+        SSLKit.SSLParams sslParams = SSLKit.getSslSocketFactory(null, null, null);
         return new OkHttpClient.Builder()
                 .connectionPool(new ConnectionPool(5, 5, TimeUnit.MINUTES))
                 .retryOnConnectionFailure(true)
                 .dispatcher(new Dispatcher())
                 .addInterceptor(logInterceptor)
+                .sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager)
+                .hostnameVerifier(new HostnameVerifier() {
+                    @Override
+                    public boolean verify(String hostname, SSLSession session) {
+                        return true;
+                    }
+                })
                 .readTimeout(60, TimeUnit.SECONDS)
                 .connectTimeout(60, TimeUnit.SECONDS)
-                .writeTimeout(3, TimeUnit.MINUTES)
+                .writeTimeout(60, TimeUnit.SECONDS)
                 .build();
     }
 
@@ -149,21 +265,14 @@ public class AnHttp {
 
     /**************http method***************/
 
-    public static Request get(String url) {
+    public static Request get(@NonNull String url) {
         return new Request().method(Request.Method.GET, url);
     }
 
-    public static Request post(String url) {
+    public static Request post(@NonNull String url) {
         return new Request().method(Request.Method.POST, url);
     }
 
-
-    public Headers getHeaders() {
-        if (headers == null) {
-            headers = defaultHeaders();
-        }
-        return headers;
-    }
 
     /**
      * 取消请求

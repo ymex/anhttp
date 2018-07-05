@@ -1,8 +1,11 @@
 package cn.ymex.net;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executor;
@@ -23,6 +26,7 @@ public class Request {
     private okhttp3.Request okRequest;
     private okhttp3.Call okCall;
     private RequestBody okRequestBody;
+    private Map<String, String> requestBodyParam;
     private Headers okHeaders;
 
     private String mUrl;
@@ -34,6 +38,7 @@ public class Request {
     Request() {
         okClient = AnHttp.instance().getOkHttpClient();
         uiExecutor = AnHttp.instance().getMainExecutor();
+        requestBodyParam = new HashMap<>();
     }
 
     public Request url(String url) {
@@ -42,7 +47,7 @@ public class Request {
     }
 
 
-    public Request method(String method, String url) {
+    public Request method(@NonNull String method, @NonNull String url) {
         this.mUrl = url;
         this.mMethod = method;
         return this;
@@ -53,19 +58,41 @@ public class Request {
         return this;
     }
 
-    public Request param(RequestBody param) {
-        this.okRequestBody = param;
-        return this;
-    }
-
 
     public Request param(Param param) {
+        initRequestBody(param);
         this.okRequestBody = param.build();
         return this;
     }
 
+    private void initRequestBody(Param param) {
+        Map<String, String> commonParam = AnHttp.instance().getCommonParams();
+
+        for (Map.Entry<String, String> entry : commonParam.entrySet()) {
+            param.add(entry.getKey(), entry.getValue());
+            requestBodyParam.put(entry.getKey(), entry.getValue());
+        }
+
+        for (Map.Entry<String, String> entry : param.innerParam.entrySet()) {
+            requestBodyParam.put(entry.getKey(), entry.getValue());
+        }
+    }
+
     public Request headers(Headers headers) {
-        this.okHeaders = getHeaders();
+        if (headers == null) {
+            return this;
+        }
+        Headers.Builder builder = getHeaders().newBuilder();
+        Iterator<String> iterator = headers.names().iterator();
+        while (iterator.hasNext()) {
+            String name = iterator.next();
+            String value = headers.get(name);
+            if (!TextUtils.isEmpty(value)) {
+                builder.add(name, value);
+            }
+
+        }
+        this.okHeaders = builder.build();
         return this;
     }
 
@@ -89,7 +116,7 @@ public class Request {
 
     private Headers getHeaders() {
         if (this.okHeaders == null) {
-            this.okHeaders = AnHttp.instance().getHeaders();
+            this.okHeaders = AnHttp.instance().getCommonHeaders();
         }
         return okHeaders;
     }
@@ -143,16 +170,8 @@ public class Request {
     public void call(final Callback callback) {
         sendOnPrepare(callback);
 
-        if (okRequestBody != null && !HttpMethod.permitsRequestBody(mMethod)) {
-            //todo  get 请求参数转为 url 链接
-        }
-        if (okRequestBody == null && HttpMethod.requiresRequestBody(mMethod)) {
-            okRequestBody = Param.form().build();
-        }
-
         okRequest = buildRequest();
         okCall = okClient.newCall(okRequest);
-
         okCall.enqueue(new okhttp3.Callback() {
             @Override
             public void onFailure(Call call, final IOException e) {
@@ -166,12 +185,52 @@ public class Request {
         });
     }
 
+
+    public RequestBody getOkRequestBody() {
+        if (okRequestBody == null && HttpMethod.requiresRequestBody(mMethod)) {
+            initRequestBody(Param.form());
+        }
+        return okRequestBody;
+    }
+
+
+    private String getUrl() {
+        String url = mUrl;
+        if (!(url.startsWith("http://") || url.startsWith("https://"))) {
+            String baseUrl = AnHttp.instance().getBaseUrl();
+            if (!TextUtils.isEmpty(baseUrl)) {
+                this.mUrl = baseUrl + url;
+            } else {
+                this.mUrl = url;
+            }
+        }
+        if (!HttpMethod.permitsRequestBody(mMethod)) {
+            if (getOkRequestBody() == null) {
+                initRequestBody(Param.form());
+            }
+            StringBuilder stringBuilder = new StringBuilder("");
+            if (!mUrl.contains("?")) {
+                stringBuilder.append("?");
+            }
+            for (Map.Entry<String, String> entry : requestBodyParam.entrySet()) {
+                stringBuilder.append(entry.getKey());
+                stringBuilder.append("=");
+                stringBuilder.append(entry.getValue());
+                stringBuilder.append("&");
+            }
+            stringBuilder.replace(stringBuilder.lastIndexOf("&"), stringBuilder.length(), "");
+            mUrl = mUrl + stringBuilder.toString();
+        }
+        return mUrl;
+    }
+
     private okhttp3.Request buildRequest() {
+
         return new okhttp3.Request.Builder()
+                .url(getUrl())
                 .tag(mTag)
-                .headers(okHeaders != null ? okHeaders : AnHttp.instance().getHeaders())
-                .method(mMethod, HttpMethod.permitsRequestBody(mMethod) ? okRequestBody : null)
-                .url(mUrl)
+                .headers(getHeaders())
+                .method(mMethod, HttpMethod.permitsRequestBody(mMethod) ? getOkRequestBody() : null)
                 .build();
     }
 
