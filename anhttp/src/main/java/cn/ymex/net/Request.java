@@ -60,17 +60,17 @@ public class Request {
 
 
     public Request param(Param param) {
-        initRequestBody(param);
-        this.okRequestBody = param.build();
+        this.okRequestBody = resetRequestBody(param).build();
         return this;
     }
 
-    private Param initRequestBody(Param param) {
+    private Param resetRequestBody(Param param) {
         Map<String, String> commonParam = AnHttp.instance().getCommonParams();
 
         for (Map.Entry<String, String> entry : commonParam.entrySet()) {
-            param.add(entry.getKey(), entry.getValue());
-            requestBodyParam.put(entry.getKey(), entry.getValue());
+            if (!param.innerParam.containsKey(entry.getKey())) {
+                param.add(entry.getKey(), entry.getValue());
+            }
         }
 
         for (Map.Entry<String, String> entry : param.innerParam.entrySet()) {
@@ -189,7 +189,7 @@ public class Request {
 
     public RequestBody getOkRequestBody() {
         if (okRequestBody == null && HttpMethod.requiresRequestBody(mMethod)) {
-            okRequestBody = initRequestBody(Param.form()).build();
+            okRequestBody = resetRequestBody(Param.form()).build();
         }
         return okRequestBody;
     }
@@ -207,7 +207,7 @@ public class Request {
         }
         if (!HttpMethod.permitsRequestBody(mMethod)) {
             if (getOkRequestBody() == null) {
-                initRequestBody(Param.form());
+                resetRequestBody(Param.form());
             }
             StringBuilder stringBuilder = new StringBuilder("");
             if (!mUrl.contains("?")) {

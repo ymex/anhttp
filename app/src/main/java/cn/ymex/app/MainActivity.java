@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void get() {
-        AnHttp.post("content/2/1").param(Param.form().add("main", "hi")).call(new ResponseCallback<BaseModel<List<ResultsBean>>>() {
+        AnHttp.get("content/2/1").call(new ResponseCallback<BaseModel<List<ResultsBean>>>() {
             @Override
             public void onResult(BaseModel<List<ResultsBean>> result, Response.Status status) {
                 if (status.isSuccessful()) {
