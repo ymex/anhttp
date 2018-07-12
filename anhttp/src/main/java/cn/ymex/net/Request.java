@@ -65,7 +65,7 @@ public class Request {
         return this;
     }
 
-    private void initRequestBody(Param param) {
+    private Param initRequestBody(Param param) {
         Map<String, String> commonParam = AnHttp.instance().getCommonParams();
 
         for (Map.Entry<String, String> entry : commonParam.entrySet()) {
@@ -76,6 +76,7 @@ public class Request {
         for (Map.Entry<String, String> entry : param.innerParam.entrySet()) {
             requestBodyParam.put(entry.getKey(), entry.getValue());
         }
+        return param;
     }
 
     public Request headers(Headers headers) {
@@ -188,7 +189,7 @@ public class Request {
 
     public RequestBody getOkRequestBody() {
         if (okRequestBody == null && HttpMethod.requiresRequestBody(mMethod)) {
-            initRequestBody(Param.form());
+            okRequestBody = initRequestBody(Param.form()).build();
         }
         return okRequestBody;
     }

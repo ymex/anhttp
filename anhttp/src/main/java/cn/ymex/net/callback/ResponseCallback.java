@@ -64,8 +64,22 @@ public class ResponseCallback<E> extends AbstractCallback<E> {
 
     }
 
+    @Override
+    public void onResponse(final Response response) {
+        if (response.getResponse().code() >= 400 ) {
+            AnHttp.instance().getMainExecutor().execute(new Runnable() {
+                @Override
+                public void run() {
+                    onError(new NetException("response code " + response.getResponse().code()));
+                }
+            });
+        } else {
+            super.onResponse(response);
+        }
+    }
+
     /**
-     * 结果处理
+     * 结果处理,http 状态码 大于等于 400 且没有转换错误
      *
      * @param result
      * @param status
