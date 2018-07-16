@@ -38,6 +38,7 @@ public class AnHttp {
     private boolean debug = false;
     private OkHttpClient okHttpClient;
     private MainThreadExecutor mainExecutor;
+    private boolean autoProvingResponseCode;
 
     /**
      * 共同头部
@@ -104,6 +105,21 @@ public class AnHttp {
     public AnHttp setOkHttpClient(OkHttpClient okHttpClient) {
         this.okHttpClient = okHttpClient;
         return this;
+    }
+
+
+    /**
+     * 自动校验返回状态码，400
+     * @param autoProvingResponseCode
+     * @return
+     */
+    public AnHttp setAutoProvingResponseCode(boolean autoProvingResponseCode) {
+        this.autoProvingResponseCode = autoProvingResponseCode;
+        return this;
+    }
+
+    public boolean isAutoProvingResponseCode() {
+        return autoProvingResponseCode;
     }
 
     /**

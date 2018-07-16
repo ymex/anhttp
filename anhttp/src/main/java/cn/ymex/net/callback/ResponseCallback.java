@@ -20,12 +20,11 @@ import okhttp3.ResponseBody;
  * @author ymexc
  * 2018/6/25
  * About:响应处理
- * 注意：仅支持 String ,JSONObject,JSONArray,不支持泛型
  */
-public class ResponseCallback<E> extends AbstractCallback<E> {
+public final class ResponseCallback<E> extends AbstractCallback<E> {
 
-    private Type mType;
-    private Parser<Response, ?> parser;
+    protected Type mType;
+    protected Parser<Response, ?> parser;
 
     public ResponseCallback() {
     }
@@ -66,7 +65,11 @@ public class ResponseCallback<E> extends AbstractCallback<E> {
 
     @Override
     public void onResponse(final Response response) {
-        if (response.getResponse().code() >= 400 ) {
+        if (!AnHttp.instance().isAutoProvingResponseCode()) {
+            super.onResponse(response);
+            return;
+        }
+        if (isHttpSuccess(response)) {
             AnHttp.instance().getMainExecutor().execute(new Runnable() {
                 @Override
                 public void run() {
@@ -79,7 +82,7 @@ public class ResponseCallback<E> extends AbstractCallback<E> {
     }
 
     /**
-     * 结果处理,http 状态码 大于等于 400 且没有转换错误
+     * 结果处理，主线
      *
      * @param result
      * @param status

@@ -63,4 +63,16 @@ public abstract class AbstractCallback<T> implements Callback<T> {
 
     @Override
     public abstract T convert(Response value) throws Exception;
+
+
+    /**
+     * 请求响应成功（code >= 200 && code < 400）
+     * @param response
+     * @return
+     */
+    public boolean isHttpSuccess(Response response) {
+        int code = response.getResponse().code();
+        return code >= 200 && code < 400;
+    }
+
 }
