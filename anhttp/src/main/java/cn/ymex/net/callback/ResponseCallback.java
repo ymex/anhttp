@@ -21,7 +21,7 @@ import okhttp3.ResponseBody;
  * 2018/6/25
  * About:响应处理
  */
-public final class ResponseCallback<E> extends AbstractCallback<E> {
+public class ResponseCallback<E> extends AbstractCallback<E> {
 
     protected Type mType;
     protected Parser<Response, ?> parser;

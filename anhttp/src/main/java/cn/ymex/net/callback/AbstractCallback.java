@@ -66,7 +66,7 @@ public abstract class AbstractCallback<T> implements Callback<T> {
 
 
     /**
-     * 请求响应成功（code >= 200 && code < 400）
+     * 请求响应成功
      * @param response
      * @return
      */
