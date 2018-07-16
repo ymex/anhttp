@@ -38,6 +38,17 @@ public final class Param {
     }
 
 
+
+    public Param addEncoded(String key, String value) {
+        if (formBuilder != null) {
+            formBuilder.addEncoded(key, value);
+        } else if (mutipartBuilder != null) {
+            mutipartBuilder.addFormDataPart(key, value);
+        }
+        innerParam.put(key, value);
+        return this;
+    }
+
     public Param add(String key, String value) {
         if (formBuilder != null) {
             formBuilder.add(key, value);
