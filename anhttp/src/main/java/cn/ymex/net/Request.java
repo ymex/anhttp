@@ -209,6 +209,10 @@ public class Request {
             if (getOkRequestBody() == null) {
                 resetRequestBody(Param.form());
             }
+
+            if (requestBodyParam.isEmpty()) {
+                return mUrl;
+            }
             StringBuilder stringBuilder = new StringBuilder("");
             if (!mUrl.contains("?")) {
                 stringBuilder.append("?");
@@ -219,6 +223,7 @@ public class Request {
                 stringBuilder.append(entry.getValue());
                 stringBuilder.append("&");
             }
+
             stringBuilder.replace(stringBuilder.lastIndexOf("&"), stringBuilder.length(), "");
             mUrl = mUrl + stringBuilder.toString();
         }
