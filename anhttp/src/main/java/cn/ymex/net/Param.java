@@ -26,16 +26,17 @@ public final class Param {
     Map<String, String> innerParam = new HashMap<>();
 
 
-    String  jsonMediaType = null;
+    String jsonMediaType = null;
 
     private Param(FormBody.Builder formBuilder) {
         this.formBuilder = formBuilder;
     }
+
     private Param(MultipartBody.Builder mutipartBuilder) {
         this.mutipartBuilder = mutipartBuilder;
     }
 
-    private Param(RequestBody body){
+    private Param(RequestBody body) {
         this.requestBody = body;
     }
 
@@ -51,10 +52,9 @@ public final class Param {
         return new Param(new MultipartBody.Builder());
     }
 
-    public static Param json(){
+    public static Param json() {
         return new Param();
     }
-
 
 
     public Param addEncoded(String key, String value) {
@@ -135,7 +135,7 @@ public final class Param {
         } else if (jsonMediaType != null) {
             JSONObject object = new JSONObject(innerParam);
             return RequestBody.create(MediaType.parse(jsonMediaType), object.toString());
-        }else {
+        } else {
             return RequestBody.create(null, "");
         }
     }
