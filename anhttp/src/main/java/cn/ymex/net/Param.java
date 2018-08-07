@@ -56,6 +56,9 @@ public final class Param {
         return new Param();
     }
 
+    public static Param param(RequestBody requestBody) {
+        return new Param(requestBody);
+    }
 
     public Param addEncoded(String key, String value) {
         if (formBuilder != null) {
