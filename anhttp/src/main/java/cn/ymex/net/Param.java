@@ -2,6 +2,8 @@ package cn.ymex.net;
 
 import android.support.annotation.Nullable;
 
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,6 +11,7 @@ import okhttp3.FormBody;
 import okhttp3.Headers;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 /**
  * @author ymexc
@@ -19,14 +22,25 @@ public final class Param {
 
     FormBody.Builder formBuilder;
     MultipartBody.Builder mutipartBuilder;
+    okhttp3.RequestBody requestBody;
     Map<String, String> innerParam = new HashMap<>();
+
+
+    String  jsonMediaType = null;
 
     private Param(FormBody.Builder formBuilder) {
         this.formBuilder = formBuilder;
     }
-
     private Param(MultipartBody.Builder mutipartBuilder) {
         this.mutipartBuilder = mutipartBuilder;
+    }
+
+    private Param(RequestBody body){
+        this.requestBody = body;
+    }
+
+    private Param() {
+        this.jsonMediaType = "application/json; charset=utf-8";
     }
 
     public static Param form() {
@@ -35,6 +49,10 @@ public final class Param {
 
     public static Param multipart() {
         return new Param(new MultipartBody.Builder());
+    }
+
+    public static Param json(){
+        return new Param();
     }
 
 
@@ -110,8 +128,16 @@ public final class Param {
     public okhttp3.RequestBody build() {
         if (formBuilder != null) {
             return formBuilder.build();
+        } else if (mutipartBuilder != null) {
+            return mutipartBuilder.build();
+        } else if (requestBody != null) {
+            return requestBody;
+        } else if (jsonMediaType != null) {
+            JSONObject object = new JSONObject(innerParam);
+            return RequestBody.create(MediaType.parse(jsonMediaType), object.toString());
+        }else {
+            return RequestBody.create(null, "");
         }
-        return mutipartBuilder.build();
     }
 
 }

@@ -3,10 +3,10 @@
 
 
 ```
-compile 'cn.ymex.anhttp:anhttp:1.0.6'
+compile 'cn.ymex.anhttp:anhttp:1.0.7'
 
 #支持Gson转换
-compile 'cn.ymex.anhttp:anhttp-gson:1.0.6'
+compile 'cn.ymex.anhttp:anhttp-gson:1.0.7'
 ```
 
 ## 使用
