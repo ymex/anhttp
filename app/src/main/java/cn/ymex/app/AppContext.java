@@ -17,6 +17,7 @@ public class AppContext extends Application {
                 .setBaseUrl("http://gank.io/api/history/")
                 .addCommonParam("sign","222")
                 .addCommonHeader("token","10086")
+                .setReadTimeout(15)
                 .setContext(this).setParser(new ParserGson());
     }
 }

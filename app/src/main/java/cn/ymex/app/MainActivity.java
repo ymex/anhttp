@@ -10,12 +10,23 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
+
+import java.io.IOException;
 import java.util.List;
 
 import cn.ymex.net.AnHttp;
-import cn.ymex.net.Param;
 import cn.ymex.net.Response;
 import cn.ymex.net.callback.ResponseCallback;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.ObservableSource;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
+import okhttp3.ResponseBody;
 
 public class MainActivity extends AppCompatActivity {
     private TextView tvContent;
@@ -43,11 +54,26 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void get() {
-        AnHttp.get("content/2/1").call(new ResponseCallback<BaseModel<List<ResultsBean>>>() {
+//        AnHttp.get("content/2/1").call(new ResponseCallback<BaseModel<List<ResultsBean>>>() {
+//            @Override
+//            public void onResult(BaseModel<List<ResultsBean>> result, Response.Status status) {
+//                if (status.isSuccessful()) {
+//                    tvContent.setText(result.getResults().get(0).getContent());
+//                }
+//            }
+//
+//            @Override
+//            public void onError(Throwable throwable) {
+//                super.onError(throwable);
+//                System.out.println("---------:" + throwable.getLocalizedMessage());
+//            }
+//        });
+
+        AnHttp.get("http://192.168.0.110/api/search").call(new ResponseCallback<BaseModel<List<ResultsBean>>>() {
             @Override
             public void onResult(BaseModel<List<ResultsBean>> result, Response.Status status) {
                 if (status.isSuccessful()) {
-                    tvContent.setText(result.getResults().get(0).getContent());
+                    tvContent.setText(result.getMessage());
                 }
             }
 
@@ -57,7 +83,26 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("---------:" + throwable.getLocalizedMessage());
             }
         });
+
     }
+
+
+    public   Observable<Response> rxGet(final String url) {
+        return Observable.create(new ObservableOnSubscribe<Response>() {
+            @Override
+            public void subscribe(ObservableEmitter<Response> emitter) throws Exception {
+                Response response = AnHttp.get(url).call();
+                emitter.onNext(response);
+            }
+        }).flatMap(new Function<Response, ObservableSource<Response>>() {
+            @Override
+            public ObservableSource<Response> apply(Response response) throws Exception {
+                return Observable.just(response);
+            }
+        });
+    }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

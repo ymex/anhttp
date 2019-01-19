@@ -30,13 +30,9 @@ public interface Callback<T> extends Convert<Response, T> {
     void onError(Throwable throwable);
 
     /**
-     * 结束请求
+     * 请求结束
      * ui 线程
      */
     void onComplete();
 
-    /**
-     * 数据转换，子线程
-     */
-    // T convert(Response value) throws Exception;
 }

@@ -6,6 +6,8 @@ package cn.ymex.app;
  */
 public class BaseModel<T> {
     private boolean error;
+    private int code;
+    private String message;
     private T results;
 
     public boolean isError() {
@@ -22,5 +24,21 @@ public class BaseModel<T> {
 
     public void setResults(T results) {
         this.results = results;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

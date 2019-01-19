@@ -37,6 +37,38 @@ public class ResponseCallback<E> extends AbstractCallback<E> {
         this.parser = parser;
     }
 
+
+
+    @Override
+    public void onResponse(final Response response) {
+        if (!AnHttp.instance().isAutoProvingResponseCode()) {
+            super.onResponse(response);
+            return;
+        }
+        if (isHttpSuccess(response)) {
+            AnHttp.instance().getMainExecutor().execute(new Runnable() {
+                @Override
+                public void run() {
+                    onError(new NetException("response code " + response.getResponse().code()));
+                }
+            });
+            return;
+        }
+        super.onResponse(response);
+
+    }
+
+    /**
+     * 结果处理，主线
+     *
+     * @param result
+     * @param status
+     */
+    @Override
+    public void onResult(E result, Response.Status status) {
+
+    }
+
     @Override
     public E convert(Response value) throws Exception {
 
@@ -63,40 +95,12 @@ public class ResponseCallback<E> extends AbstractCallback<E> {
 
     }
 
-    @Override
-    public void onResponse(final Response response) {
-        if (!AnHttp.instance().isAutoProvingResponseCode()) {
-            super.onResponse(response);
-            return;
-        }
-        if (isHttpSuccess(response)) {
-            AnHttp.instance().getMainExecutor().execute(new Runnable() {
-                @Override
-                public void run() {
-                    onError(new NetException("response code " + response.getResponse().code()));
-                }
-            });
-        } else {
-            super.onResponse(response);
-        }
-    }
-
-    /**
-     * 结果处理，主线
-     *
-     * @param result
-     * @param status
-     */
-    @Override
-    public void onResult(E result, Response.Status status) {
-
-    }
-
     private Parser<Response, ?> parseClass(Response response, Class<?> type) throws Exception {
         if (type == null) {
             return null;
         }
-        ResponseBody body = response.getBody();
+        ResponseBody body = response.getBody();//
+
         if (body == null) {
             return null;
         }

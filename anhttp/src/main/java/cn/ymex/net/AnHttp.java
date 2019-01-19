@@ -39,7 +39,9 @@ public class AnHttp {
     private OkHttpClient okHttpClient;
     private MainThreadExecutor mainExecutor;
     private boolean autoProvingResponseCode;
-
+    private long readTimeout = 60;
+    private long connectTimeout = 60;
+    private long writeTimeout = 60;
     /**
      * 共同头部
      */
@@ -110,6 +112,7 @@ public class AnHttp {
 
     /**
      * 自动校验返回状态码，400
+     *
      * @param autoProvingResponseCode
      * @return
      */
@@ -224,6 +227,22 @@ public class AnHttp {
         return this;
     }
 
+
+    public AnHttp setReadTimeout(long time) {
+        this.readTimeout = time;
+        return this;
+    }
+
+    public AnHttp setConnectTimeout(long time) {
+        this.connectTimeout = time;
+        return this;
+    }
+
+    public AnHttp setWriteTimeout(long time) {
+        this.writeTimeout = time;
+        return this;
+    }
+
     public AnHttp clearCommonParams() {
         getCommonParams().clear();
         return this;
@@ -265,9 +284,9 @@ public class AnHttp {
                         return true;
                     }
                 })
-                .readTimeout(60, TimeUnit.SECONDS)
-                .connectTimeout(60, TimeUnit.SECONDS)
-                .writeTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(readTimeout, TimeUnit.SECONDS)
+                .connectTimeout(connectTimeout, TimeUnit.SECONDS)
+                .writeTimeout(writeTimeout, TimeUnit.SECONDS)
                 .build();
     }
 
