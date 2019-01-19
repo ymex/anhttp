@@ -1,12 +1,14 @@
+[ ![Download](https://api.bintray.com/packages/ymex/maven/anhttp/images/download.svg) ](https://bintray.com/ymex/maven/anhttp/_latestVersion)
+
 # anhttp
 基于okhttp 的封装，方便简单。
 
 
 ```
-compile 'cn.ymex.anhttp:anhttp:1.0.7'
+compile 'cn.ymex.anhttp:anhttp:1.0.8'
 
 #支持Gson转换
-compile 'cn.ymex.anhttp:anhttp-gson:1.0.7'
+compile 'cn.ymex.anhttp:anhttp-gson:1.0.8'
 ```
 
 ## 使用
