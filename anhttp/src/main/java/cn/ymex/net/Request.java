@@ -64,6 +64,11 @@ public class Request {
         return this;
     }
 
+    public Request param(RequestBody param) {
+        this.okRequestBody = param;
+        return this;
+    }
+
     private Param resetRequestBody(Param param) {
         Map<String, String> commonParam = AnHttp.instance().getCommonParams();
 
