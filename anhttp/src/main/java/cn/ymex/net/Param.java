@@ -136,11 +136,20 @@ public final class Param {
         } else if (requestBody != null) {
             return requestBody;
         } else if (jsonMediaType != null) {
-            JSONObject object = new JSONObject(innerParam);
-            return RequestBody.create(MediaType.parse(jsonMediaType), object.toString());
+
+            return RequestBody.create(MediaType.parse(jsonMediaType), param2Json());
         } else {
             return RequestBody.create(null, "");
         }
+    }
+
+    /**
+     * innerParam 参数转换成字串
+     * @return
+     */
+    public String param2Json() {
+        JSONObject object = new JSONObject(innerParam);
+        return object.toString();
     }
 
 }
